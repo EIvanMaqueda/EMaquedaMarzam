@@ -1,0 +1,138 @@
+﻿@model ML.Medicamento
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-11 col-md-12">
+            <h2>Medicamentos</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("Form", "Medicamento", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+                <div class="form-group-lg">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.IdMedicamento, new { @class = "hidden" })
+                            @Html.TextBoxFor(model => model.IdMedicamento, new { @class = "hidden form-control" })
+
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Nombre)
+                            <div class="input-group">
+                                <span class="input-group-addon" id="usernameicon"><i class="fa-solid fa-circle-user" style="color: chartreuse"></i></span>
+                                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "txtNombre" })
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Descripcion)
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa-solid fa-user"></i></span>
+                                @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control", @id = "txtDescripcion" })
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Precio)
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa-solid fa-user-tie"></i></span>
+                                @Html.TextBoxFor(model => model.Precio, new { @class = "form-control", @id = "txtPrecio" })
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <div class="input-group-addon mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-user-plus"></i></span>
+                                <input id="fuImage" type='file' class="form-control" name="fuImage" onchange="validateFile(this), readURL(this);  " />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @if (Model.Imagen != null)
+                            {
+                                <br />
+                                <img id="Img" src="data:image/*;base64,@Model.Imagen" style="width:50px ; height:50px" />
+
+                            }
+                            else
+                            {
+                                <br />
+                                <img id="Img" src="~/Imagenes/Default.png" style="width:50px ; height:50px" />
+                            }
+                        </div>
+                    </div>
+
+
+
+                    <br />
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <br />
+                            <div class="input-group">
+                                <button type="submit" value="Guardar" class="btn btn-success"> <i class="fa-solid fa-floppy-disk fa-beat"></i>  Guardar </button>
+                                @*<input type="submit" value="Guardar" class="btn btn-success" />*@
+                                @Html.ActionLink("Regresar", "Index", "Medicamento", htmlAttributes: new { @class = "btn btn-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                @Html.HiddenFor(Model => Model.Imagen)
+            }
+        </div>
+    </div>
+
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+  
+
+    function validateFile() {//funcion para validar el formato de la imagen
+        var allowedExtension = ['jpeg', 'jpg', 'png'];//formatos validos admitidos
+        var fileExtension = document.getElementById('fuImage').value.split('.').pop().toLowerCase();//obtiene la extencion y la convierte en minusculas
+        var isValidFile = false;//crecaion de la varable que nos indica si el formato es o no valido
+        for (var index in allowedExtension) {
+            if (fileExtension === allowedExtension[index]) {//copara el valor obtenido de la imgen con los formatos permitidos
+                isValidFile = true;//cambia valor de la variable
+                break;
+            }
+        }
+        if (!isValidFile) {//si el formato introducido es incorrecto entra aqui
+            alert('Las extensiones permitidas son : *.' + allowedExtension.join(', *.'));//alerta indicando los formatos permitidos
+            document.getElementById('fuImage').value = ""//vacia el valor del imput para que subo un archivo valido
+        }
+        return isValidFile;//regresa si el archivo es o no permitido
+    }
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#Img').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

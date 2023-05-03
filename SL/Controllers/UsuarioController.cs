@@ -10,7 +10,15 @@ namespace SL.Controllers
         public IHttpActionResult Login(string Nombre, string Password)
         {
             ML.Result result=BL.Usuario.Login(Nombre, Password);
-            return Ok(result);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else { 
+            
+                return NotFound();
+            }
+            
         }
     }
 }

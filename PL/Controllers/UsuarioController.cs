@@ -20,6 +20,7 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Login(string Nombre,string Password)
         {
+            ML.Usuario usuario = new ML.Usuario();
             ML.Result result = new ML.Result();
             try
             {
@@ -40,23 +41,33 @@ namespace PL.Controllers
                         ML.Usuario resultItemList = new ML.Usuario();
                         resultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(readTask.Result.Object.ToString());
                         result.Object = resultItemList;
+                        usuario = (ML.Usuario)result.Object;
+                        Session["Usuario"] = usuario.Nombre + " " + usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno;
+                        ViewBag.Message = "Bienvenido " + Session["Usuario"] + " !";
+                        ViewBag.Bandera = true;
                         result.Correct = true;
-
                     }
                     else
                     {
                         result.Correct = false;
+                        ViewBag.message = "Usuario o contraseña incorrecta";
+                        ViewBag.Bandera = false;
                     }
 
                 }
             }
             catch (Exception ex)
             {
-
+                ViewBag.Bandera = false;
+                ViewBag.message = "Usuario o contraseña incorrecta";
                 result.Correct = false;
                 result.Message = ex.Message;
             }
-            return View();
+            
+           
+            return PartialView("Modal");
         }
+
+       
     }
 }
