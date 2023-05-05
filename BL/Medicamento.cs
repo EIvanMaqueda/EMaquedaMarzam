@@ -149,5 +149,39 @@ namespace BL
             }
             return result;
         }
+
+        public static ML.Usuario Carrito(ML.Usuario usuario, ML.Medicamento medicamento)
+        {
+
+            ML.Usuario usertemp = new ML.Usuario();
+            usertemp.Medicamentos = new List<object>();
+            ML.Medicamento medicamento1 = new ML.Medicamento();
+            bool bandera = false;
+            int pos = 0;
+            foreach (ML.Medicamento medicamentotemp in usuario.Medicamentos)
+            {
+                if (medicamentotemp.Cantidad==0)
+                {
+                    medicamentotemp.Cantidad= 1;
+                }
+                if (medicamentotemp.IdMedicamento == medicamento.IdMedicamento)
+                {
+                    bandera = true;
+                    medicamentotemp.Cantidad +=1;
+                    medicamento1 = medicamentotemp;
+                    break;
+                }
+                pos += 1;
+            }
+            if (bandera == true)
+            {
+                usuario.Medicamentos[pos] = medicamento1;
+            }
+            else {
+                medicamento.Cantidad= 1;
+                usuario.Medicamentos.Add(medicamento);
+            }
+            return usuario;
+        }
     }
 }

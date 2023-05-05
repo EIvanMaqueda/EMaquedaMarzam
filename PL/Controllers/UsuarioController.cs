@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 
 namespace PL.Controllers
@@ -42,8 +43,9 @@ namespace PL.Controllers
                         resultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(readTask.Result.Object.ToString());
                         result.Object = resultItemList;
                         usuario = (ML.Usuario)result.Object;
-                        Session["Usuario"] = usuario.Nombre + " " + usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno;
-                        ViewBag.Message = "Bienvenido " + Session["Usuario"] + " !";
+                        Session["Nombre"] =  usuario.Nombre + " " + usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno;
+                        Session["IdUsuario"] = usuario.IdUsuario;
+                        ViewBag.Message = "Bienvenido " + Session["Nombre"] + " !";
                         ViewBag.Bandera = true;
                         result.Correct = true;
                     }

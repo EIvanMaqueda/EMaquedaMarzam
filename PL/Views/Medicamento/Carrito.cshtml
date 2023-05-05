@@ -1,0 +1,66 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <br />
+    <br />
+    <br />
+    <h2>Carrito de @Model.Nombre</h2>
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        @if (Model.Medicamentos != null)
+        {
+            //tabla
+            <table class="table table-bordered table-responsive">
+                <thead style="background-color: chartreuse">
+                    <tr>
+                        <td class="hidden">IdMedicamento</td>
+                        <td class="text-center" style=" font-weight:bold;">Imagen</td>
+                        <td class="text-center" style=" font-weight:bold;">Nombre</td>
+                        <td class="text-center" style=" font-weight:bold;">Descripcion</td>
+                        <td class="text-center" style=" font-weight:bold;">Precio</td>
+                        <td class="text-center" style=" font-weight:bold;">Cantidad</td>
+                        <td class="text-center" style=" font-weight:bold;">Subtotal</td>
+
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{double total = 0; }
+                    @foreach (ML.Medicamento medicamento in Model.Medicamentos)
+                    {
+                        <tr>
+                            <td class="hidden">@medicamento.IdMedicamento</td>
+                            <td align="center"><img id="Img" src="data:image/*;base64,@medicamento.Imagen" style="width:50px ; height:50px" /></td>
+                            <td align="center">@medicamento.Nombre</td>
+                            <td align="center">@medicamento.Descripcion</td>
+                            <td align="center">$@((double)medicamento.Precio)</td>
+                            <td align="center">@medicamento.Cantidad</td>
+                            @{double subtotal = medicamento.Cantidad * ((double)medicamento.Precio);
+                                total = total + subtotal;
+                            }
+                            <td align="center">$@subtotal</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" align="center">Total: </td>
+                        <td align="center"> $@total</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">No hay productos agregados en el carrito </div>
+        }
+    </div>
+</div>

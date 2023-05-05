@@ -100,8 +100,6 @@ namespace PL.Controllers
                     result.Correct = false;
                     result.Message = ex.Message;
                 }
-                //ML.Result result = BL.Medicamento.GetById(IdMedicamento.Value);
-                //medicamento = (ML.Medicamento)result.Object;
                 return View(medicamento);
             }
             
@@ -166,8 +164,6 @@ namespace PL.Controllers
             
         }
 
-
-
         [HttpGet]
 
         public ActionResult Delete(int IdMedicamento) {
@@ -213,6 +209,56 @@ namespace PL.Controllers
             data = reader.ReadBytes((int)foto.ContentLength);
             return data;
 
+        }
+
+        [HttpGet]
+
+        public ActionResult Productos() {
+
+            ML.Result result = BL.Medicamento.GetAll();
+            ML.Medicamento medicamento= new ML.Medicamento();
+            medicamento.Medicamentos = result.Objects;
+            return View(medicamento);
+        }
+
+        [HttpGet]
+
+        public ActionResult Carrito(int? IdMedicamento) {
+            ML.Usuario usuario = new ML.Usuario();
+            if (IdMedicamento != null)
+            {
+                ML.Result result = BL.Medicamento.GetById(IdMedicamento.Value);
+                ML.Medicamento medicamento = (ML.Medicamento)result.Object;
+                
+                if (Session["Usuario"] != null)
+                {
+                    usuario = (ML.Usuario)Session["Usuario"];
+                    if (usuario.Medicamentos != null)
+                    {
+                        usuario = BL.Medicamento.Carrito(usuario, medicamento);
+                    }
+                }
+                else
+                {
+                    usuario.Nombre = Session["Nombre"].ToString();
+                    usuario.IdUsuario = int.Parse(Session["IdUsuario"].ToString());
+                    usuario.Medicamentos = new List<object>();
+                    medicamento.Cantidad = 1;
+                    usuario.Medicamentos.Add(medicamento);
+                    Session["Usuario"] = usuario;
+
+                }
+            }
+            else {
+                if (Session["Usuario"]!=null)
+                {
+                    usuario = (ML.Usuario)Session["Usuario"];
+                } 
+                
+                var nombre1= Session["Nombre"].ToString();
+                usuario.Nombre= Session["Nombre"].ToString();
+            }
+            return View(usuario);
         }
 
 

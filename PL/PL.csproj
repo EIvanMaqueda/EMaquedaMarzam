@@ -151,6 +151,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\card.css" />
     <Content Include="Content\login.css" />
+    <Content Include="Content\modal.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -189,6 +190,9 @@
     <Content Include="Views\Medicamento\Index.cshtml" />
     <Content Include="Views\Medicamento\Form.cshtml" />
     <Content Include="Views\Medicamento\Modal.cshtml" />
+    <Content Include="Views\Medicamento\Productos.cshtml" />
+    <Content Include="Views\Medicamento\ModalCompra.cshtml" />
+    <Content Include="Views\Medicamento\Carrito.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

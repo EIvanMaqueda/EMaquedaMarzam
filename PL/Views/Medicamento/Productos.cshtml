@@ -1,0 +1,59 @@
+﻿@model ML.Medicamento
+@{
+    ViewBag.Title = "Productos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/card.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/Content/modal.css" asp-append-version="true" />
+
+<h2>Medicamentos</h2>
+
+<div class="container">
+    <div class="row">
+    </div>
+    <br />
+
+    <br />
+    <div class="row">
+        @if (Model.Medicamentos != null)
+        {
+            foreach (ML.Medicamento medicamento in Model.Medicamentos)
+            {
+                <div class="col-md-3">
+                    <div class="wsk-cp-product">
+                        <div class="wsk-cp-img"><img src="data:image/*;base64,@medicamento.Imagen" alt="Product" class="img-responsive" /></div>
+                        <div class="wsk-cp-text">
+                            <div class="category">
+                                <span>Medicamento</span>
+
+                            </div>
+                            <div class="title-product">
+                                <h3>@medicamento.Nombre</h3>
+                            </div>
+                            <div class="description-prod">
+                                <p>@medicamento.Descripcion</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="wcf-left"><span class="price">$@((double)medicamento.Precio)</span></div>
+                                <div class="wcf-right"><a href="@Url.Action("Carrito", "Medicamento", new { IdMedicamento = medicamento.IdMedicamento })"><i class="bi bi-bag-plus-fill"></i></a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">Ocurrio un error al realizar la consulta </div>
+        }
+    </div>
+
+
+
+
+
+</div>
+
+
