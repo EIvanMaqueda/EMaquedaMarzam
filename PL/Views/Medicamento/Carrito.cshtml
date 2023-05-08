@@ -3,6 +3,9 @@
     ViewBag.Title = "Carrito";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="~/Content/Buttons.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/Content/modalForm.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/Content/creditcard.css" asp-append-version="true" />
 <div class="container">
     <br />
     <br />
@@ -35,32 +38,297 @@
                     @foreach (ML.Medicamento medicamento in Model.Medicamentos)
                     {
                         <tr>
-                            <td class="hidden">@medicamento.IdMedicamento</td>
+                            <td class="hidden" id="txtIdMedicamento+@medicamento.IdMedicamento">@medicamento.IdMedicamento</td>
                             <td align="center"><img id="Img" src="data:image/*;base64,@medicamento.Imagen" style="width:50px ; height:50px" /></td>
                             <td align="center">@medicamento.Nombre</td>
                             <td align="center">@medicamento.Descripcion</td>
-                            <td align="center">$@((double)medicamento.Precio)</td>
-                            <td align="center">@medicamento.Cantidad</td>
+                            <td align="center" id="inpupPrecio+@medicamento.IdMedicamento">$@((double)medicamento.Precio)</td>
+                            <td align="center">
+                                <div class="number">
+                                    <span class="minus" onclick="minus('inputSubtotal+'+@medicamento.IdMedicamento,'inpupPrecio+'+@medicamento.IdMedicamento,'txtIdMedicamento+'+@medicamento.IdMedicamento,'inputCantidad+'+@medicamento.IdMedicamento)">-</span>
+                                    <input type="text" id="inputCantidad+@medicamento.IdMedicamento" value="@medicamento.Cantidad" readonly=readonly />
+                                    <span class="plus" onclick="plus('inputSubtotal+'+@medicamento.IdMedicamento,'inpupPrecio+'+@medicamento.IdMedicamento,'txtIdMedicamento+'+@medicamento.IdMedicamento,'inputCantidad+'+@medicamento.IdMedicamento)">+</span>
+                                </div>
+                            </td>
                             @{double subtotal = medicamento.Cantidad * ((double)medicamento.Precio);
                                 total = total + subtotal;
                             }
-                            <td align="center">$@subtotal</td>
+                            <td align="center" id="inputSubtotal+@medicamento.IdMedicamento">$@subtotal</td>
                         </tr>
-                    }
+                                }
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="5" align="center">Total: </td>
-                        <td align="center"> $@total</td>
+                        <td align="center" id="inputTotal"> $@total</td>
                     </tr>
                 </tfoot>
             </table>
 
 
-        }
-        else
-        {
+                                }
+                                else
+                                {
             <div class="alert alert-danger" role="alert">No hay productos agregados en el carrito </div>
-        }
+                                }
     </div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Proceder a la compra
+    </button>
+
+    <!-- Modal -->
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            @*<div class="modal-content">*@
+            @*<div class="modal-body">*@
+
+            <div class='containercard'>
+                <div class='window'>
+                    <div class='order-info'>
+                        <div class='order-info-content'>
+                            <h2>Order de Compra</h2>
+                            <div class='line'></div>
+                            @{double total2 = 0; }
+                          
+                            @foreach (ML.Medicamento medicamento1 in Model.Medicamentos)
+                            {
+                                <table class="order-table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <img id="Img" src="data:image/*;base64,@medicamento1.Imagen" class="full-width" />
+                                            </td>
+                                            <td>
+                                                <br /><span class="thin">@medicamento1.Nombre</span>
+                                                <br /> @medicamento1.Descripcion<br /> <span class='thin small'> Color: Grey/Orange, Size: 10.5<br /><br /></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="price">$@((double)medicamento1.Precio)</div>
+                                                @{double subtotal2 = medicamento1.Cantidad*(double)medicamento1.Precio;
+                                                    total2 = total2 + subtotal2; }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <div class='line'></div>
+                            }
+
+
+                        <div class='total'>
+                            <span style='float:left;'>
+                                <div class='thin dense'>Iva 16%</div>
+                                <div class='thin dense'>Subtotal</div>
+                                TOTAL
+                            </span>
+                            @{double subtotaliva = total2 * .16;
+                                double totaliva = total2 + subtotaliva;  }
+                            <span style='float:right; text-align:right;'>
+                                <div class='thin dense'>$@subtotaliva</div>
+                                <div class='thin dense'>$@total2</div>
+                                $@totaliva
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+                    <div class='credit-info'>
+                        <div class='credit-info-content'>
+                            <table class='half-input-table'>
+                                <tr>
+                                    <td>Selecciona el tipo de tarjeta: </td>
+                                    <td>
+                                        <div class='dropdown' id='card-dropdown'>
+                                            <div class='dropdown-btn' id='current-card'>Visa</div>
+                                            <div class='dropdown-select'>
+                                                <ul>
+                                                    <li>Master Card</li>
+                                                    <li>American Express</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <img src='https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png' height='80' class='credit-card-image' id='credit-card-image' /></img>
+                            Numero de Tarjeta
+                            <input class='input-field' /></input>
+                            Nombre
+                            <input class='input-field' /></input>
+                            <table class='half-input-table'>
+                                <tr>
+                                    <td>
+                                        Expira
+                                        <input class='input-field' /></input>
+                                    </td>
+                                    <td>
+                                        CVC
+                                        <input class='input-field' /></input>
+                                    </td>
+                                </tr>
+                            </table>
+                            Direccion de entrega
+                            <input class='input-field' /></input>
+        
+                           @Html.RouteLink("Realizar compra Ahora!", new { controller = "Medicamento", action = "ModalCompraExitosa" }, new { @class = "pay-btn" })
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
 </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.minus').click(function () {
+                var $input = $(this).parent().find('input');
+                var count = parseInt($input.val()) - 1;
+                count = count < 1 ? 1 : count;
+                $input.val(count);
+                $input.change();
+                return false;
+            });
+            $('.plus').click(function () {
+                var $input = $(this).parent().find('input');
+                $input.val(parseInt($input.val()) + 1);
+                $input.change();
+                return false;
+            });
+        });
+
+        function minus(inputSubtotal, inpupPrecio,idMedicamento,cantidad) {
+            var subtotal = document.getElementById(inputSubtotal).innerText;
+            var precio = document.getElementById(inpupPrecio).innerText;
+            var IdMedic = document.getElementById(idMedicamento).innerText;
+            var Cant = document.getElementById(cantidad).value-1;
+            var tot = document.getElementById("inputTotal").innerText;
+            var subtotalarray = subtotal.split('');
+            var precioarray = precio.split('');
+            var preciototal = tot.split('');
+
+            subtotalarray.shift();//quita el primer elemento del array
+            precioarray.shift();//quita el primer elemento del array
+            preciototal.shift();//quita el primer elemento del array
+
+            total = (Number.parseFloat(subtotalarray.join('')) - Number.parseFloat(precioarray.join('')));//join une el array
+            tot = (Number.parseFloat(preciototal.join('')) - Number.parseFloat(precioarray.join('')));//join une el array
+
+            document.getElementById(inputSubtotal).innerHTML = '$'+total;
+            document.getElementById("inputTotal").innerHTML = '$' + tot;
+
+            $.ajax({//inicia ajax
+                type: 'Post',//metodo por el que se va a ejecutar ajax
+                url: '@Url.Action("CantidadCarrito")',//direccion a la que se ve a ejecutar la funcion
+                dataType: 'json',//tipo de dato recibido desde controlador usuario
+                data: {
+                    idMedicamento: IdMedic,
+                    cantidad: Cant
+                },//variable que se va a enviar al controlador usuario
+                success: function (obj) {//funcion simialr a for each
+
+                },
+                error: function (ex) {//funcion similar a catch
+                    alert('Failed.' + ex);
+                }
+
+            });
+        }
+        function plus(inputSubtotal, inpupPrecio, idMedicamento, cantidad) {
+            var subtotal = document.getElementById(inputSubtotal).innerText;
+            var precio = document.getElementById(inpupPrecio).innerText;
+            var IdMedic = document.getElementById(idMedicamento).innerText;
+            var Cant = Number.parseFloat(document.getElementById(cantidad).value)+1;
+            var tot = document.getElementById("inputTotal").innerText;
+            var subtotalarray = subtotal.split('');
+            var precioarray = precio.split('');
+            var preciototal = tot.split('');
+
+            subtotalarray.shift();//quita el primer elemento del array
+            precioarray.shift();//quita el primer elemento del array
+            preciototal.shift();//quita el primer elemento del array
+
+            total = (Number.parseFloat(subtotalarray.join('')) + Number.parseFloat(precioarray.join('')));//join une el array
+            tot = (Number.parseFloat(preciototal.join('')) + Number.parseFloat(precioarray.join('')));//join une el array
+
+            document.getElementById(inputSubtotal).innerHTML = '$' + total;
+            document.getElementById("inputTotal").innerHTML = '$' + tot;
+
+            $.ajax({//inicia ajax
+                type: 'Post',//metodo por el que se va a ejecutar ajax
+                url: '@Url.Action("CantidadCarrito")',//direccion a la que se ve a ejecutar la funcion
+                dataType: 'json',//tipo de dato recibido desde controlador usuario
+                data: {
+                    idMedicamento: IdMedic,
+                    cantidad: Cant
+                },//variable que se va a enviar al controlador usuario
+                success: function (obj) {//funcion simialr a for each
+
+                },
+                error: function (ex) {//funcion similar a catch
+                    alert('Failed.' + ex);
+                }
+
+            });
+        }
+
+        var cardDrop = document.getElementById('card-dropdown');
+        var activeDropdown;
+        cardDrop.addEventListener('click', function () {
+            var node;
+            for (var i = 0; i < this.childNodes.length - 1; i++)
+                node = this.childNodes[i];
+            if (node.className === 'dropdown-select') {
+                node.classList.add('visible');
+                activeDropdown = node;
+            };
+        })
+
+        window.onclick = function (e) {
+            console.log(e.target.tagName)
+            console.log('dropdown');
+            console.log(activeDropdown)
+            if (e.target.tagName === 'LI' && activeDropdown) {
+                if (e.target.innerHTML === 'Master Card') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/2vbqk5lcpi7hjoc/MasterCard_Logo.svg.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'Master Card';
+                }
+                else if (e.target.innerHTML === 'American Express') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/f5hyn6u05ktql8d/amex-icon-6902.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'American Express';
+                }
+                else if (e.target.innerHTML === 'Visa') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'Visa';
+                }
+            }
+            else if (e.target.className !== 'dropdown-btn' && activeDropdown) {
+                activeDropdown.classList.remove('visible');
+                activeDropdown = null;
+            }
+        }
+
+
+      
+    </script>
+
+
+
+}

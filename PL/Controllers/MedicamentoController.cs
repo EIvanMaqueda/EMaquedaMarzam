@@ -15,8 +15,8 @@ namespace PL.Controllers
         // GET: Medicamento
         public ActionResult Index()
         {
-            ML.Result result= new ML.Result();
-            ML.Medicamento medicamento=new ML.Medicamento();
+            ML.Result result = new ML.Result();
+            ML.Medicamento medicamento = new ML.Medicamento();
             try
             {
                 using (var client = new HttpClient())
@@ -38,17 +38,17 @@ namespace PL.Controllers
                         foreach (var resultItem in readTask.Result.Objects)
                         {
                             ML.Medicamento resultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Medicamento>(resultItem.ToString());
-                            
+
                             result.Objects.Add(resultItemList);
                         }
                     }
-                     medicamento.Medicamentos= result.Objects;
+                    medicamento.Medicamentos = result.Objects;
                 }
             }
             catch (Exception ex)
             {
 
-                
+
             }
 
             return View(medicamento);
@@ -72,7 +72,7 @@ namespace PL.Controllers
                         string urlApi = "http://localhost:36977/";
                         client.BaseAddress = new Uri(urlApi);
 
-                        var responseTask = client.GetAsync("Api/Medicamento/GeyById/"+IdMedicamento);
+                        var responseTask = client.GetAsync("Api/Medicamento/GeyById/" + IdMedicamento);
                         responseTask.Wait();
 
                         var resultServicio = responseTask.Result;
@@ -102,7 +102,7 @@ namespace PL.Controllers
                 }
                 return View(medicamento);
             }
-            
+
         }
 
         [HttpPost]
@@ -161,13 +161,13 @@ namespace PL.Controllers
                     }
                 }
             }
-            
+
         }
 
         [HttpGet]
 
         public ActionResult Delete(int IdMedicamento) {
-            ML.Result result=new ML.Result();
+            ML.Result result = new ML.Result();
             try
             {
                 using (var client = new HttpClient())
@@ -216,7 +216,7 @@ namespace PL.Controllers
         public ActionResult Productos() {
 
             ML.Result result = BL.Medicamento.GetAll();
-            ML.Medicamento medicamento= new ML.Medicamento();
+            ML.Medicamento medicamento = new ML.Medicamento();
             medicamento.Medicamentos = result.Objects;
             return View(medicamento);
         }
@@ -229,7 +229,7 @@ namespace PL.Controllers
             {
                 ML.Result result = BL.Medicamento.GetById(IdMedicamento.Value);
                 ML.Medicamento medicamento = (ML.Medicamento)result.Object;
-                
+
                 if (Session["Usuario"] != null)
                 {
                     usuario = (ML.Usuario)Session["Usuario"];
@@ -250,15 +250,38 @@ namespace PL.Controllers
                 }
             }
             else {
-                if (Session["Usuario"]!=null)
+                if (Session["Usuario"] != null)
                 {
                     usuario = (ML.Usuario)Session["Usuario"];
-                } 
-                
-                var nombre1= Session["Nombre"].ToString();
-                usuario.Nombre= Session["Nombre"].ToString();
+                }
+
+                var nombre1 = Session["Nombre"].ToString();
+                usuario.Nombre = Session["Nombre"].ToString();
             }
             return View(usuario);
+        }
+
+        [HttpGet]
+        public ActionResult ModalCompraExitosa() { 
+            ML.Usuario usuario=new ML.Usuario();
+            usuario = (ML.Usuario)Session["Usuario"];
+            usuario.Medicamentos=new List<object>();
+            Session["Usuario"] = usuario;
+            return View();
+        }
+
+        [HttpPost]
+
+        public JsonResult CantidadCarrito(int idMedicamento,int cantidad) {
+            var data=0;
+            ML.Usuario usuario = new ML.Usuario();
+            ML.Result result = BL.Medicamento.GetById(idMedicamento);
+            ML.Medicamento medicamento=new ML.Medicamento();
+            medicamento = (ML.Medicamento)result.Object;
+            usuario = (ML.Usuario)Session["Usuario"];
+            usuario = BL.Medicamento.CantidadCarrito(usuario,medicamento,cantidad);
+            Session["Usuario"]=usuario;
+            return Json(data);
         }
 
 

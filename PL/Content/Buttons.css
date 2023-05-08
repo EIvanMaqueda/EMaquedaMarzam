@@ -1,0 +1,44 @@
+﻿span {
+    cursor: pointer;
+}
+
+.number {
+    margin: 3px;
+}
+
+.minus {
+    width: 35px;
+    height: 35px;
+    background: rgb(255 6 6 / 69%);
+    border-radius: 4px;
+    padding: 0px 8px 9px 8px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 24px;
+}
+.plus {
+    width: 35px;
+    height: 35px;
+    background: rgb(39 241 49 / 61%);
+    border-radius: 4px;
+    padding: 2px 7px 7px 8px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    border-radius: 50%;
+    font-size:24px;
+}
+
+input {
+    height: 34px;
+    width: 58px;
+    text-align: center;
+    font-size: 26px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
